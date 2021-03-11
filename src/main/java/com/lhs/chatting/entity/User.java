@@ -1,6 +1,6 @@
 package com.lhs.chatting.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "USER")
@@ -17,24 +19,38 @@ import lombok.*;
 public class User {
     @Id
     @GeneratedValue
-    @Column(name = "id", length = 45, nullable = false)
+    @Column(name = "id")
     private long id;
 
-    @Column(name = "email", length = 45)
-    private String email;
-
-    @Column(name = "password", length = 45)
-    private String password;
-
-    @Column(name = "username", length = 30)
+    @Column(name = "username", length = 10)
     private String username;
 
-    @Column(name = "nickname", length = 45, nullable = false)
+    @Setter
+    @Column(name = "password", length = 15)
+    private String password;
+
+    @Column(name = "email", columnDefinition = "TEXT")
+    private String email;
+
+    @Setter
+    @Column(name = "nickname", length = 20)
     private String nickname;
 
-    @Column(name = "profile_image", length = 50)
+    @Setter
+    @Column(name = "profile_image", columnDefinition = "TEXT")
     private String profileImage;
 
     @Column(name = "signed_time")
-    private Timestamp signedTime;
+    private LocalDateTime signedTime;
+
+    public static User of(String username, String password, String email, String nickname) {
+        return User.builder()
+                .username(username)
+                .password(password)
+                .email(email)
+                .nickname(nickname)
+                .profileImage(null)
+                .signedTime(LocalDateTime.now())
+                .build();
+    }
 }

@@ -1,5 +1,8 @@
 package com.lhs.chatting.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,15 +14,16 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MessageService {
-	@Autowired
-	private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-	public void createMessage(Message message) {
-		messageRepository.save(message);
-		// type 별로 세분화하기
-	}
+    public List<Message> searchMessageByText(Long roomId, String content) {
+        List<Message> targetMessages = messageRepository.findAllByRoomId(roomId);
+        List<Message> resultMessages = new ArrayList<>();
 
-	public void searchMessage(String contents) {
-		// 내용으로 검색
-	}
+        for (Message message : targetMessages)
+            if (message.getContents().contains(content))
+                resultMessages.add(message);
+
+        return resultMessages;
+    }
 }

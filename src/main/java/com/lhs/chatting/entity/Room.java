@@ -1,6 +1,6 @@
 package com.lhs.chatting.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,28 +9,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
 @Entity
 @Table(name = "room")
+@Builder
+@Getter
 public class Room {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private long id;
 
-	@Column(name = "created_time")
-	private Timestamp createdTime;
+    @Setter
+    @Column(name = "last_msg_id")
+    private Message lastMsgId;
 
-	@Column(name = "last_msg_id")
-	private Message lastMsgId;
-
-	public Room() {
-		createdTime = new Timestamp(System.currentTimeMillis());
-		lastMsgId = null;
-	}
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
 }

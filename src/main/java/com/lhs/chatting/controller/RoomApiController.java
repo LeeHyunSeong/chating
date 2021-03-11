@@ -1,47 +1,34 @@
 package com.lhs.chatting.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lhs.chatting.entity.Room;
-import com.lhs.chatting.entity.User;
+import com.lhs.chatting.entity.Member;
+import com.lhs.chatting.model.RoomRequest;
 import com.lhs.chatting.service.RoomService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping("/api/rooms")
 @RequiredArgsConstructor
 public class RoomApiController {
-	private final RoomService roomService;
+    private final RoomService roomService;
 
-	@MessageMapping("/rooms/{bodyMap}")
-	@SendTo("/topic/public")
-	public List<Room> makeRoom(@DestinationVariable Map<String, Object> bodyMap) {
-		String name = String.valueOf(bodyMap.get("roomName"));
-		List<User> users = new ArrayList();
-		if (StringUtils.hasText(name)) {
-			roomService.makeRoom(name, users);
-		}
-		return roomService.getRooms();
-	}
+    @PostMapping
+    public void makeRoom(@RequestParam("request") RoomRequest request) {
+        roomService.makeRoom(request.getUserIds(), request.getRoomName());
+    }
 
-	@MessageMapping("/rooms")
-	@SendTo("/topic/public")
-	public List<Room> getRooms() {
-		return roomService.getRooms();
-	}
-
-	@MessageMapping("/rooms/{roomMap}")
-	@SendTo("/topic/public")
-	public Room getRoom(@DestinationVariable Map<String, Object> roomMap) {
-		Room room = (Room) roomMap.get("room");
-		return roomService.getRoom(room);
-	}
+    @GetMapping("/{roomId}/users/{userId}")
+    public Member getRoom(@PathVariable Long roomId, @PathVariable Long userId) {
+        return roomService.getRoom(roomId, userId);
+    }
 }

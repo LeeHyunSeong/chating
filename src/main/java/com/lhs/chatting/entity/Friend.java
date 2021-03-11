@@ -1,10 +1,20 @@
 package com.lhs.chatting.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "friend")
@@ -25,19 +35,19 @@ public class Friend {
     private User friend;
 
     @Setter
-    @Column(name = "relation_type", length = 30, nullable = false)
+    @Column(name = "relation_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private FriendRelationType relationType;
 
     @Column(name = "created_time")
-    private Timestamp createdTime;
+    private LocalDateTime createdTime;
 
     public static Friend of(Long userId, Long friendId, FriendRelationType relationType) {
         return Friend.builder()
-                .relationType(relationType)
                 .user(User.builder().id(userId).build())
                 .friend(User.builder().id(friendId).build())
-                .createdTime(new Timestamp(System.currentTimeMillis()))
+                .relationType(relationType)
+                .createdTime(LocalDateTime.now())
                 .build();
     }
 }
